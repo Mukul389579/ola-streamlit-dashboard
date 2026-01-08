@@ -1,17 +1,14 @@
 import streamlit as st
 import pandas as pd
-import mysql.connector
 import matplotlib.pyplot as plt
 import seaborn as sns
-connection = mysql.connector.connect(
-    host=st.secrets["mysql"]["host"],
-    user=st.secrets["mysql"]["user"],
-    password=st.secrets["mysql"]["password"],
-    database=st.secrets["mysql"]["database"]
-)
+@st.cache_data
+def load_data():
+    df = pd.read_csv("ola_rides.csv")
+    df["Booking_date"] = pd.to_datetime(df["Booking_date"])
+    return df
 
-query = "SELECT * FROM ola_rides"
-df = pd.read_sql(query, connection)
+df = load_data()
 st.set_page_config(page_title="OLA Ride Analysis", layout="wide")
 
 st.title("🚖 OLA Ride Analysis Dashboard")
